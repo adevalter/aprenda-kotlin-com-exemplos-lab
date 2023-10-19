@@ -1,21 +1,50 @@
-// [Template no Kotlin Playground](https://pl.kotl.in/WcteahpyN)
+enum class Nivel { BASICO, INTERMEDIARIO, AVANCADO }
 
-enum class Nivel { BASICO, INTERMEDIARIO, DIFICIL }
+class Usuario(val nome: String, val email: String) {
+    override fun toString(): String = "$nome - $email"
+}
 
-class Usuario
+data class ConteudoEducacional(val nome: String, val duracao: Int = 60) {
+    override fun toString(): String = "$nome - Duração: $duracao minutos"
+}
 
-data class ConteudoEducacional(var nome: String, val duracao: Int = 60)
+class Formacao(val nome: String, val nivel: Nivel, val conteudos: List<ConteudoEducacional>) {
 
-data class Formacao(val nome: String, var conteudos: List<ConteudoEducacional>) {
+    private val inscritos = mutableListOf<Usuario>()
 
-    val inscritos = mutableListOf<Usuario>()
-    
     fun matricular(usuario: Usuario) {
-        TODO("Utilize o parâmetro $usuario para simular uma matrícula (usar a lista de $inscritos).")
+        if (inscritos.none { it.email == usuario.email }) {
+            inscritos.add(usuario)
+            println("Matrícula do ${usuario.nome} efetuada com sucesso.")
+        } else {
+            println("${usuario.nome} está matriculado nesta formação.")
+        }
     }
+
+   fun listarAlunos() {
+        println("Alunos inscritos na formação:")
+        inscritos.forEachIndexed { index, aluno ->
+            println("${index + 1}. $aluno")
+        }
+    }
+
+    override fun toString(): String = "$nome - Nível: $nivel\nConteúdos:\n${conteudos.joinToString("\n")}"
 }
 
 fun main() {
-    TODO("Analise as classes modeladas para este domínio de aplicação e pense em formas de evoluí-las.")
-    TODO("Simule alguns cenários de teste. Para isso, crie alguns objetos usando as classes em questão.")
+    val conteudoKotlin = ConteudoEducacional("Introdução ao Kotlin", 90)
+    val conteudoJava = ConteudoEducacional("Introdução ao Java",50)
+
+    val formacao = Formacao("Formação Kotlin e Java", Nivel.BASICO, listOf(conteudoKotlin, conteudoJava))
+
+    val alunoTon = Usuario("Ton", "ton@ton.com")
+    val alunoDan = Usuario("Dan", "dan@ton.com")
+
+    formacao.matricular(alunoTon)
+    formacao.matricular(alunoDan)
+
+    println(formacao)
+
+    formacao.listarAlunos()
+
 }
